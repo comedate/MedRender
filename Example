@@ -1,0 +1,72 @@
+#!/usr/bin/env python
+
+# encoding: utf-8
+'''
+# @Time    : 2020/5/28 14:11
+# @Author  : fei.wang
+# @Email   : fei.wang@united-imaging.com
+# @File    : example_blend.py
+# @Software: PyCharm
+
+'''
+
+import vtk
+
+import argparse
+import os
+
+import numpy as np
+import vtk
+
+if __name__ == '__main__':
+
+    image_jpeg_reader_vol = vtk.vtkJPEGReader()
+    image_jpeg_reader_vol.SetFileName(r'D:/result_vol.raw')
+    image_jpeg_reader_vol.Update()
+
+    image_jpeg_reader_mask = vtk.vtkJPEGReader()
+    image_jpeg_reader_mask.SetFileName(r'D:/result_mask.raw')
+    image_jpeg_reader_mask.Update()
+
+    image_blender = vtk.vtkImageBlend()
+    image_blender.AddInputConnection(image_jpeg_reader_vol.GetOutputPort())
+    image_blender.AddInputConnection(image_jpeg_reader_mask.GetOutputPort())
+    image_blender.SetOpacity(0, 0.5)
+    image_blender.SetOpacity(1, 0.5)
+    image_blender.Update()
+
+    # imageViewer = vtk.vtkImageViewer2()
+    # imageViewer.SetInputConnection(image_blender.GetOutputPort())
+    # renderWindowInteractor = vtk.vtkRenderWindowInteractor()
+    # imageViewer.SetupInteractor(renderWindowInteractor)
+    # imageViewer.GetRenderer().ResetCamera()
+    # imageViewer.GetRenderer().SetBackground(0,0,0)
+    # imageViewer.SetSize(512,512)
+    # imageViewer.GetRenderWindow().SetWindowName("read and show jpg test")
+    # renderWindowInteractor.Initialize()
+    # renderWindowInteractor.Start()
+
+    # setup actor
+    image_actor = vtk.vtkImageActor()
+    image_actor.SetInputData(image_blender.GetOutput())
+
+    # setup render
+    renderer = vtk.vtkRenderer()
+    renderer.AddActor(image_actor)
+    renderer.ResetCamera()
+    renderer.SetBackground(0,0,0)
+
+    # setup window
+    ren_win = vtk.vtkRenderWindow()
+    ren_win.AddRenderer(renderer)
+    ren_win.SetWindowName("read and show jpg test")
+    ren_win.SetSize(512,512)
+    ren_win.Render()
+
+    style = vtk.vtkInteractorStyleImage()
+    rwi = vtk.vtkRenderWindowInteractor()
+    rwi.SetInteractorStyle(style)
+    rwi.SetRenderWindow(ren_win)
+
+    rwi.Initialize()
+    rwi.Start()

@@ -1,21 +1,6 @@
 #!/usr/bin/env python
-
 # encoding: utf-8
-'''
-# @Time    : 2020/5/28 14:11
-# @Author  : fei.wang
-# @Email   : fei.wang@united-imaging.com
-# @File    : example_blend.py
-# @Software: PyCharm
 
-'''
-
-import vtk
-
-import argparse
-import os
-
-import numpy as np
 import vtk
 
 if __name__ == '__main__':
